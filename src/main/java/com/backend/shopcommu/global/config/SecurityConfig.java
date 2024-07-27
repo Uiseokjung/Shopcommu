@@ -2,6 +2,7 @@ package com.backend.shopcommu.global.config;
 
 import com.backend.shopcommu.global.jwt.JwtUtil;
 import com.backend.shopcommu.global.security.CustomUserDetailsService;
+import com.backend.shopcommu.global.security.JwtAuthenticationFilter;
 import com.backend.shopcommu.global.security.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ public class SecurityConfig {
                                 .requestMatchers("/public/**", "api/users/signup", "api/users/signin").permitAll() // 공개 API
                                 .anyRequest().authenticated() // 인증된 사용자만 접근 가능
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtAuthorizationFilter(jwtUtil, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
